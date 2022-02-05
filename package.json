@@ -1,0 +1,23 @@
+{
+	"name": "createneutralinoapp",
+	"version": "0.0.1",
+	"description": "Set up a NeutralinoJS App by running one command.",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "node src/index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "github.com/DEVLOPRR/createNeutralinoApp"
+	},
+	"author": "ADITYA MISHRA",
+	"license": "MIT",
+	"dependencies": {
+		"chalk": "^5.0.0",
+		"chalk-animation": "^1.6.0",
+		"figlet": "^1.5.2",
+		"gradient-string": "^2.0.0",
+		"inquirer": "^8.2.0",
+		"nanospinner": "^1.0.0"
+	}
+}
