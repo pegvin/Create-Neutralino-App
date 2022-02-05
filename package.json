@@ -1,10 +1,12 @@
 {
-	"name": "createneutralinoapp",
+	"name": "create-neutralino-app",
 	"version": "0.0.1",
 	"description": "Set up a NeutralinoJS App by running one command.",
-	"main": "src/index.js",
+	"bin": "./src/index.js",
+	"type": "module",
 	"scripts": {
-		"test": "node src/index.js"
+		"test": "node src/index.js",
+		"lse": "ls-engines --save"
 	},
 	"repository": {
 		"type": "git",
@@ -14,10 +16,15 @@
 	"license": "MIT",
 	"dependencies": {
 		"chalk": "^5.0.0",
-		"chalk-animation": "^1.6.0",
-		"figlet": "^1.5.2",
+		"degit": "^2.8.4",
 		"gradient-string": "^2.0.0",
 		"inquirer": "^8.2.0",
 		"nanospinner": "^1.0.0"
+	},
+	"devDependencies": {
+		"ls-engines": "^0.6.4"
+	},
+	"engines": {
+		"node": "^17 || ^16 || ^14.13 || ^12.17"
 	}
 }
