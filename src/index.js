@@ -85,14 +85,18 @@ async function getAppName() {
 }
 
 async function getFrontendLib() {
+	let choices = Object.keys(templateUrls);
+	choices[0] = "None"
+
+	for (let i = 0; i < choices.length; i++) {
+		choices[i] = choices[i].charAt(0).toUpperCase() + choices[i].slice(1);
+	}
+
 	const answers = await inquirer.prompt({
 		name: 'frontend_lib',
 		type: 'list',
 		message: 'Choose A Frontend Library To Use\n',
-		choices: [
-			'None',
-			'Svelte'
-		]
+		choices: choices
 	});
 
 	if (answers.frontend_lib.toLowerCase() == 'none') {
