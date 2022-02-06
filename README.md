@@ -34,7 +34,11 @@ Your Properties Should Look Like This
       command: "Your Command",
       description: "Your Command Description"
     }
-  ]
+  ],
+  recomendedCommands: [
+		"my command 1",
+		"my command 2",
+	]
 }
 ```
 
@@ -47,6 +51,9 @@ Your Properties Should Look Like This
   - every command here is a object containing 2 properties:
     - `command` name of the command.
     - `description` a little information about that command.
+
+- `recomendedCommands` is list of Commands which will be recommended to run before doing anything.
+  - every command here is a string.
 
 ---
 
