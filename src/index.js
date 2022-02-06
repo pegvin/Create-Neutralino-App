@@ -146,8 +146,10 @@ for (let i = 0; i < templateUrls[frontendLib].commands.length; i++) {
     ${chalk.hex("#E8E8E8")(commandObj.description)}\n`);
 }
 
-console.log(`We Recommend you to run these commands before doing anything:\n
-  ${neutralinoGradient(`cd ${appName}/`)}
-  ${neutralinoGradient(`npx neu update`)}\n`);
+console.log(`We Recommend you to run these commands inside your project directory before doing anything:\n`);
 
-console.log(`Have Fun With ${neutralinoGradient('Neutralino JS')}!\n`);
+for (let i = 0; i < templateUrls[frontendLib].recomendedCommands.length; i++) {
+	console.log("  " + neutralinoGradient(templateUrls[frontendLib].recomendedCommands[i]));
+}
+
+console.log(`\nHave Fun With ${neutralinoGradient('Neutralino JS')}!\n`);
