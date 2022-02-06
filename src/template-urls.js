@@ -10,10 +10,14 @@ export default {
 				command: "neu build --release",
 				description: "Builds your App into Executables."
 			}
+		],
+		recomendedCommands: [
+			"neu update",
+			"neu run",
 		]
 	},
 	"svelte": {
-		src: "DEVLOPRR/svelte-neutralino-template",
+		src: "DEVLOPRR/svelte-neutralino",
 		commands: [
 			{
 				command: "npm run dev",
@@ -35,6 +39,10 @@ export default {
 				command: "npm run start:neu",
 				description: "Only Starts your Neutralino App (Doesn't Start Rollup For Bundling Svelte Code)."
 			},
+		],
+		recomendedCommands: [
+			"neu update",
+			"npm run dev",
 		]
 	}
 }
