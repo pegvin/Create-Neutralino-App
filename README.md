@@ -36,9 +36,9 @@ Your Properties Should Look Like This
     }
   ],
   recomendedCommands: [
-		"my command 1",
-		"my command 2",
-	]
+    "my command 1",
+    "my command 2",
+  ]
 }
 ```
 
