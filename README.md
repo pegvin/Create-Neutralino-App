@@ -18,7 +18,7 @@ here `USERNAME` is the GitHub Username where the `REPOSITORY` is located, and `R
 ---
 
 ## Requirement
-- [Node v12.7](https://nodejs.org/download/release/v12.17.0/) or Greater
+- [Node v12.20](https://nodejs.org/download/release/v12.20.0/) or Greater
 - NPM Or Yarn
 - NPX
 
