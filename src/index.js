@@ -27,6 +27,30 @@ import fs from 'fs';
 // Template URLs to get the information about the template.
 import templateUrls from './template-urls.js';
 
+import fetch from 'node-fetch';
+
+/**
+ * Check If A GitHub Repo is Valid Or Not.
+ * @description Checks if A GitHub Repository does exist and also if that repository contains neutralino.config.json
+ * @param {String} userAndRepo Username And Repo in "USERNAME/REPO" Format.
+ * @returns True if valid repository else STRING specifying error.
+ */
+async function validateRepository(userAndRepo) {
+	// Get the JSON Data from github API
+	const data = await (await fetch(`https://api.github.com/repos/${userAndRepo}`)).json();
+	if (data.message && data.message.toLowerCase() == "not found") { // If API returned "not found"
+		return "REPO_NOT_FOUND";
+	} else {
+		// Get the information about "neutralino.config.json" from the github repo.
+		const content = await (await fetch(`https://api.github.com/repos/${userAndRepo}/contents/neutralino.config.json`)).json();
+		if (content.message && content.message.toLowerCase() == "not found") { // if API returned "not found"
+			return "CONFIG_NOT_FOUND";
+		} else {
+			return true;
+		}
+	}
+}
+
 /**
  * Rename Stuff Like 'name' in package.json and other things.
  * @param {String} appName Name Of The App User Specified.
@@ -34,26 +58,28 @@ import templateUrls from './template-urls.js';
  * @param {String} template Name Of The Template User Selected.
  */
 function renameTemplate(appName, appPath, template) {
-	// Read the Neutralino Config File.
-	var configJSON = fs.readFileSync(path.join(appPath, 'neutralino.config.json'), {
-		encoding: 'utf-8'
-	});
+	if (fs.existsSync(path.join(appPath, 'neutralino.config.json'))) {
+		// Read the Neutralino Config File.
+		var configJSON = fs.readFileSync(path.join(appPath, 'neutralino.config.json'), {
+			encoding: 'utf-8'
+		});
 
-	// Convert the data of Neutralino Config File From JSON To JavaScript Object.
-	configJSON = JSON.parse(configJSON);
+		// Convert the data of Neutralino Config File From JSON To JavaScript Object.
+		configJSON = JSON.parse(configJSON);
 
-	// Change The Properties.
-	configJSON.applicationId = `js.neutralino.${template}`;
-	configJSON.modes.window.title = appName;
-	configJSON.cli.binaryName = appName;
+		// Change The Properties.
+		configJSON.applicationId = `js.neutralino.${template}`;
+		configJSON.modes.window.title = appName;
+		configJSON.cli.binaryName = appName;
 
-	// Convert The JS Object Back To JSON.
-	const stringJSON = JSON.stringify(configJSON, null, 2);
+		// Convert The JS Object Back To JSON.
+		const stringJSON = JSON.stringify(configJSON, null, 2);
 
-	// Write New Data into the Neutralino Config File.
-	fs.writeFileSync(path.join(appPath, 'neutralino.config.json'), stringJSON, {
-		encoding: 'utf-8'
-	});
+		// Write New Data into the Neutralino Config File.
+		fs.writeFileSync(path.join(appPath, 'neutralino.config.json'), stringJSON, {
+			encoding: 'utf-8'
+		});
+	}
 
 	// Check If package.json exists inside the downloaded template, if it does then change properties of it too.
 	if (fs.existsSync(path.join(appPath, 'package.json'))) {
@@ -103,7 +129,7 @@ function renameTemplate(appName, appPath, template) {
  * @param {String} template Name Of the Template User Selected.
  * @param {String} appName Name Of the App User Specified.
  */
-async function downloadTemplate(template = 'default-neu', appName) {
+async function downloadTemplate(template = templateUrls['default-neu'].src, appName) {
 	// Create A Spinner And Start it.
 	let spinnerInstance = nanospinner.createSpinner(`Downloading Template`).start();
 
@@ -111,7 +137,7 @@ async function downloadTemplate(template = 'default-neu', appName) {
 	const templatePath = path.join(process.cwd(), appName);
 
 	// Initialize Degit To Clone The Template.
-	var degitInstance = degit(templateUrls[template].src);
+	var degitInstance = degit(template);
 
 	// Clone The Template To The Template Path.
 	await degitInstance.clone(templatePath);
@@ -200,11 +226,39 @@ if (appName.length > 214) {
 	error(`App Name Should Be Less Than or Equal To 214 Characters`);
 }
 
-// Get The FrontEnd Library User Want's to use.
-var frontendLib = await getFrontendLib();
+// frontEndLib will hold the library name.
+var frontendLib = 'default-neu';
+
+// templateURL will hold the github path to the template repo in "USERNAME/REPO" format.
+var templateURL = templateUrls[frontendLib].src;
+
+// If user has passed a argument.
+if (process.argv.length > 2) {
+	let arg = process.argv[2];
+	// check if the repository path format is valid, i.e. "USERNAME/REPO"
+	if (arg.split('/').length == 2) {
+		// check if the repository passed is a valid repository
+		let validRepo = await validateRepository(arg);
+
+		if (validRepo === true) {
+			frontendLib = arg.split('/')[1];
+			templateURL = arg;
+		} else if (validRepo == "REPO_NOT_FOUND") {
+			error("Error When Validating The Repository - REPO_NOT_FOUND");
+		} else if (validRepo == "CONFIG_NOT_FOUND") {
+			error("Error When Validating The Repository - CONFIG_NOT_FOUND")
+		}
+	} else {
+		error('Invalid Argument');
+	}
+} else { // if no argument is passed then get the input from user.
+	// Get The FrontEnd Library User Want's to use.
+	frontendLib = await getFrontendLib();
+	templateURL = templateUrls[frontendLib].src;
+}
 
 // Download The Template.
-await downloadTemplate(frontendLib, appName);
+await downloadTemplate(templateURL, appName);
 
 // Create A Spinner.
 let spinnerInstance = nanospinner.createSpinner(`Setting Up`).start();
@@ -216,20 +270,25 @@ renameTemplate(appName, path.join(process.cwd(), appName), frontendLib);
 spinnerInstance.success();
 
 // Show Success Message.
-console.log(`\nSuccess! Created ${appName} at ${path.join(process.cwd(), appName)}.\nInside that directory, you can run several commands:\n`);
+console.log(`\nSuccess! Created ${appName} at ${path.join(process.cwd(), appName)}.`);
 
-// Show The Available Commands in that template.
-for (let i = 0; i < templateUrls[frontendLib].commands.length; i++) {
-	let commandObj = templateUrls[frontendLib].commands[i];
-	console.log(`  ${neutralinoGradient(commandObj.command)}
-    ${chalk.hex("#E8E8E8")(commandObj.description)}\n`);
+// If the selected frontend library is inside `template-urls.js` then log the properties of it like recommended Commands, etc etc.
+if (templateUrls[frontendLib]) {
+	console.log(`Inside that directory, you can run several commands:\n`);
+
+	// Show The Available Commands in that template.
+	for (let i = 0; i < templateUrls[frontendLib].commands.length; i++) {
+		let commandObj = templateUrls[frontendLib].commands[i];
+		console.log(`  ${neutralinoGradient(commandObj.command)}
+		${chalk.hex("#E8E8E8")(commandObj.description)}\n`);
+	}
+	
+	console.log(`We Recommend you to run these commands inside your project directory before doing anything:\n`);
+	
+	// Show the Recommended Commands.
+	for (let i = 0; i < templateUrls[frontendLib].recomendedCommands.length; i++) {
+		console.log("  " + neutralinoGradient(templateUrls[frontendLib].recomendedCommands[i]));
+	}
 }
 
-console.log(`We Recommend you to run these commands inside your project directory before doing anything:\n`);
-
-// Show the Recommended Commands.
-for (let i = 0; i < templateUrls[frontendLib].recomendedCommands.length; i++) {
-	console.log("  " + neutralinoGradient(templateUrls[frontendLib].recomendedCommands[i]));
-}
-
-console.log(`\nHave Fun With ${neutralinoGradient('Neutralino JS')}!\n`);
+console.log(`\nHave Fun With ${neutralinoGradient('Neutralino JS')}!\n`);		
