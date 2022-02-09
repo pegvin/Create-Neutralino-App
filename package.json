@@ -1,6 +1,6 @@
 {
 	"name": "create-neutralino-app",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"description": "Set up a NeutralinoJS App by running one command.",
 	"bin": "./src/index.js",
 	"type": "module",
@@ -19,13 +19,14 @@
 		"degit": "^2.8.4",
 		"gradient-string": "^2.0.0",
 		"inquirer": "^8.2.0",
-		"nanospinner": "^1.0.0"
+		"nanospinner": "^1.0.0",
+		"node-fetch": "^3.2.0"
 	},
 	"devDependencies": {
 		"ls-engines": "^0.6.4"
 	},
 	"engines": {
-		"node": "^17 || ^16 || ^14.13 || ^12.17"
+		"node": "^17 || ^16 || ^14.13.1 || ^12.20"
 	},
 	"keywords": [
 		"neutralinojs",
