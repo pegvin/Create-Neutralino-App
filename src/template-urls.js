@@ -77,6 +77,7 @@ export default {
 		recomendedCommands: [
 			"npm install",
 			"npx neu update",
+			"npx build:react",
 			"npm start"
 		]
 	}
