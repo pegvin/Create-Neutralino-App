@@ -279,15 +279,15 @@ if (templateUrls[frontendLib]) {
 	// Show The Available Commands in that template.
 	for (let i = 0; i < templateUrls[frontendLib].commands.length; i++) {
 		let commandObj = templateUrls[frontendLib].commands[i];
-		console.log(`  ${neutralinoGradient(commandObj.command)}
-		${chalk.hex("#E8E8E8")(commandObj.description)}\n`);
+		console.log(`  ${neutralinoGradient(commandObj.command)}`);
+		console.log(`    ${chalk.hex("#E8E8E8")(commandObj.description)}\n`);
 	}
 	
 	console.log(`We Recommend you to run these commands inside your project directory before doing anything:\n`);
 	
 	// Show the Recommended Commands.
 	for (let i = 0; i < templateUrls[frontendLib].recomendedCommands.length; i++) {
-		console.log("  " + neutralinoGradient(templateUrls[frontendLib].recomendedCommands[i]));
+		console.log(`  ${neutralinoGradient(templateUrls[frontendLib].recomendedCommands[i])}`);
 	}
 }
 
