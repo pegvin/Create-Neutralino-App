@@ -1,6 +1,6 @@
 {
 	"name": "create-neutralino-app",
-	"version": "0.7.0",
+	"version": "0.8.0",
 	"description": "Set up a NeutralinoJS App by running one command.",
 	"bin": "./src/index.js",
 	"type": "module",
