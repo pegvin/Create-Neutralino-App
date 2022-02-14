@@ -21,11 +21,11 @@ export default {
 		commands: [
 			{
 				command: "npm run dev",
-				description: "Launches Rollup And Your Application."
+				description: "Launches Your Application With Hot Reloading."
 			},
 			{
 				command: "npm run build",
-				description: "Builds your Code And Neutralino App into Executables."
+				description: "Builds your whole App."
 			},
 			{
 				command: "npm run build:svelte",
@@ -33,16 +33,51 @@ export default {
 			},
 			{
 				command: "npm run build:neu",
-				description: "Builds your Neutralino App (Doesn't Build Svelte Code)."
+				description: "Builds your Neutralino App."
 			},
 			{
 				command: "npm run start:neu",
-				description: "Only Starts your Neutralino App (Doesn't Start Rollup For Bundling Svelte Code)."
+				description: "Only Starts your Neutralino App."
 			},
 		],
 		recomendedCommands: [
-			"neu update",
-			"npm run dev",
+			"npm install",
+			"npx neu update",
+			"npm run dev"
+		]
+	},
+	"react": {
+		src: "DEVLOPRR/react-neutralino",
+		commands: [
+			{
+				command: "npm start",
+				description: "Launches Your Application with Hot Reloading."
+			},
+			{
+				command: "npm run build",
+				description: "Builds your whole App."
+			},
+			{
+				command: "npm run start:neu",
+				description: "Only Starts your Neutralino App."
+			},
+			{
+				command: "npm run start:react",
+				description: "Only Starts your react App."
+			},
+			{
+				command: "npm run build:react",
+				description: "Builds Your React Code."
+			},
+			{
+				command: "npm run build:neu",
+				description: "Builds your Neutralino App."
+			}
+		],
+		recomendedCommands: [
+			"npm install",
+			"npx neu update",
+			"npm start"
 		]
 	}
 }
