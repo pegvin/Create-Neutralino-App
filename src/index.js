@@ -6,9 +6,6 @@ import chalk from 'chalk';
 // Inquirer For Getting User inputs in various ways.
 import inquirer from 'inquirer';
 
-// Degit For Cloning The Template.
-import degit from 'degit';
-
 // Gradient String For Making Gradient Text.
 import gradient from 'gradient-string';
 
@@ -27,7 +24,17 @@ import fs from 'fs';
 // Template URLs to get the information about the template.
 import templateUrls from './template-urls.js';
 
+// For Interacting With GitHub API and Downloading File From Remote URL.
 import fetch from 'node-fetch';
+
+// The Imports Are For Writing The Downloaded File.
+import { createWriteStream as fsCreateWriteStream } from 'node:fs';
+import { pipeline as nsPipeline } from 'node:stream';
+import { promisify as nuPromisify } from 'node:util';
+
+// For Extracting Zip Files.
+import JSZip from 'jszip';
+
 
 /**
  * Check If A GitHub Repo is Valid Or Not.
@@ -133,19 +140,56 @@ async function downloadTemplate(template = templateUrls['default-neu'].src, appN
 	// Create A Spinner And Start it.
 	let spinnerInstance = nanospinner.createSpinner(`Downloading Template`).start();
 
-	// Get The Template Path.
-	const templatePath = path.join(process.cwd(), appName);
+	try {
+		// Get The Template Path And The Zip Path
+		const templatePath = path.join(process.cwd(), appName);
+		const zipPath = path.resolve(`${appName}-template.zip`);
 
-	// Initialize Degit To Clone The Template.
-	var degitInstance = degit(template);
+		const streamPipeline = nuPromisify(nsPipeline);
+		const response = await fetch(`https://github.com/${template}/archive/main.zip`);
+		if (!response.ok) throw new Error(`unexpected response ${response.statusText}`);
+		await streamPipeline(response.body, fsCreateWriteStream(zipPath));
 
-	// Clone The Template To The Template Path.
-	await degitInstance.clone(templatePath);
+		spinnerInstance.update({
+			text: `Extracting The Template`
+		})
 
-	// Stop The Spinner With Success.
-	spinnerInstance.success({
-		text: 'Downloaded The Template!'
-	});
+		const zipFileData = fs.readFileSync(zipPath, {
+			encoding: 'binary'
+		})
+
+		var zip = new JSZip();
+
+		const zipFileContents = await zip.loadAsync(zipFileData);
+		let files = Object.keys(zipFileContents.files);
+		let rootFolder = path.resolve(files[0]) // Folder Name Which Contains All The Files
+		fs.mkdirSync(rootFolder);
+		files.shift();
+
+		for (let i = 0; i < files.length; i++) {
+			let fileName = files[i];
+			// Check if the filename ends with / which means it is a directory.
+			if (!fileName.endsWith("/")) { // if it is a file then read it's content and write into it.
+				let fileData = await zipFileContents.file(fileName).async("nodebuffer");
+				fs.writeFileSync(path.resolve(files[i]), fileData);
+			} else { // if filename is a directory then make that directory
+				fs.mkdirSync(path.resolve(files[i]))
+			}
+		}
+
+		fs.renameSync(rootFolder, templatePath);
+		fs.rmSync(zipPath);
+
+		// Stop The Spinner With Success.
+		spinnerInstance.success({
+			text: 'Downloaded & Extracted The Template!'
+		});
+	} catch (err) {
+		spinnerInstance.error({
+			text: `Error Occured When Downloading The Template From Remote.`
+		})
+		error(err)
+	}
 }
 
 /**
