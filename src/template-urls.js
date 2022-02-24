@@ -1,6 +1,6 @@
 export default {
 	"default-neu": {
-		src: "neutralinojs/neutralinojs-zero",
+		src: "neutralinojs/neutralinojs-minimal",
 		commands: [
 			{
 				command: "neu run",
