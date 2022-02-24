@@ -35,7 +35,7 @@ here `USERNAME` is the GitHub Username where the `REPOSITORY` is located, and `R
 
 Or If want your template to be a listed as an option in `create-neutralino-app`,
 
-1. Put your template onto a GitHub Repository (Example - [Neutralino Svelte Template](https://github.com/DEVLOPRR/svelte-neutralino-template))
+1. Put your template onto a GitHub Repository (Example - [Neutralino Svelte Template](https://github.com/DEVLOPRR/svelte-neutralino))
 2. Make A Pull Request Adding Properties For Your Template in [`template-urls.js`](https://github.com/DEVLOPRR/Create-Neutralino-App/blob/main/src/template-urls.js)
 3. Wait For your Request To Be Pulled.
 
