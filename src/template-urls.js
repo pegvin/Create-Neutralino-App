@@ -80,5 +80,39 @@ export default {
 			"npx build:react",
 			"npm start"
 		]
+	},
+	"vite react": {
+		src: "DEVLOPRR/vite-react-neutralino",
+		commands: [
+			{
+				command: "npm start",
+				description: "Launches Your Application."
+			},
+			{
+				command: "npm run build",
+				description: "Builds Your Application."
+			},
+			{
+				command: "npm run dev:vite",
+				description: "Watches And Builds Your Frontend React Code."
+			},
+			{
+				command: "npm run dev:neu",
+				description: "Launches Neutralino Application Doesn't Build Your Frontend."
+			},
+			{
+				command: "npm run build:vite",
+				description: "Builds Your Frontend Code Via Vite."
+			},
+			{
+				command: "npm run build:neu",
+				description: "Builds Your Neutralino Application Doesn't Build Your Frontend."
+			},
+		],
+		recomendedCommands: [
+			"npm install",
+			"neu update",
+			"npm start",
+		]
 	}
 }
